@@ -34,16 +34,18 @@ const createTiles = function (tileData) {
   return classifiedDiv(tilesBlock, 'tiles-holder');
 };
 
-const creeateBody = function (data) {
+const createBody = function (data) {
   const divs = data.map(createTiles).join('');
   return createTag('body', classifiedDiv(divs, 'tiles-assembler'));
 };
 
 const createHTML = function (data) {
   const head = createHead();
-  const body = creeateBody(data);
+  const body = createBody(data);
   const htmlBlock = createTag('html', head + body);
   fs.writeFileSync('./tiles.html', htmlBlock, 'utf8');
 };
 
+const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
+createHTML(data);
 exports.createHTML = createHTML;
