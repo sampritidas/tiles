@@ -15,21 +15,22 @@ const defineClass = function (num) {
   return classObj[num];
 };
 
-const convertTile = function (number) {
-  return number.map(defineClass);
+const convertToClass = function (numbers) {
+  return numbers.map(defineClass);
 };
 
 const createHead = function () {
   const link = '<link rel="stylesheet" href="styles.css">';
-  return createTag('head', link);
+  const meta = '\n<meta http-equiv="refresh" content="0.5"/>';
+  return createTag('head', link + meta);
 };
 
 const classifiedDiv = function (content, className) {
   return ['<div class="', className, '">\n', content, '</div>\n'].join('');
 };
 
-const createTiles = function (tileData) {
-  const convertedTile = convertTile(tileData);
+const createTiles = function (tilesData) {
+  const convertedTile = convertToClass(tilesData);
   const tilesBlock = convertedTile.reduce(classifiedDiv, '');
   return classifiedDiv(tilesBlock, 'tiles-holder');
 };
@@ -46,6 +47,12 @@ const createHTML = function (data) {
   fs.writeFileSync('./tiles.html', htmlBlock, 'utf8');
 };
 
-const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
-createHTML(data);
-exports.createHTML = createHTML;
+const createHtmlMain = function (dataFile) {
+  const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+  createHTML(data);
+};
+
+exports.createHTMLMain = createHtmlMain;
+exports.createTag = createTag;
+exports.defineClass = defineClass;
+exports.convertToClass = convertToClass;

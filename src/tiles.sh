@@ -1,29 +1,46 @@
-function main() {
-  local block=$1
-  local total_chance=$(($block*2))
-  local chance=0
-  echo "[[2,3,4,1],[1,4,2,3],[2,4,1,3],[1,3,2,4],[2,4,3,1],[1,3,4,2]]" > data.json
+#! /bin/bash
 
-  node createhtml.js
+function GetInitPage () {
+  local data=$1
+  local dataFile=$2
+  echo $data > $dataFile
+  node initPage.js $dataFile
   open tiles.html
+}
+
+function runGame () {
+  local chance=$1
+  local total_chance=$2
+  local block=$3
+  local dataFile=$4
+  local first=$5
+  local second=$6
 
   while [[ $chance -lt $total_chance ]]
   do
     echo 'chance : ' $(($chance+1))
     read -p "Enter first choice : " first
     read -p "Enter second choice : " second
-    value=$( node tiles.js $block $first $second )
+    value=$( node tiles.js $block $first $second $dataFile )
     
     if [[ $value == "Pattern not matched" ]]
     then
       echo -ne $value '\n TRY AGAIN \n' 
       continue
     fi
-
-    open tiles.html
     chance=$(($chance + 1))
   done
-  echo "YOU WON"
 }
 
-main $1
+function main() {
+  local block=$1
+  local dataFile=$2
+  local data=$3
+  local total_chance=$(($block*2))
+  local chance=0
+
+  GetInitPage $data $dataFile
+  runGame $chance $total_chance $block $dataFile $first $second 
+
+  echo "YOU WON"
+}
